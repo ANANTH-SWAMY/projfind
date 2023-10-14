@@ -10,7 +10,7 @@ function Navbar(){
 				<ul className="menu menu-horizontal px-1 font-jetbrains text-lg">
 					<li><a href="#home">Home</a></li>
 					<li><a href="#about">About Us</a></li>
-					<li><Link to="/login">Login</Link></li>
+					<li><Link to="/login" className="border-2">Login</Link></li>
 				</ul>
 			</div>
 		</div>

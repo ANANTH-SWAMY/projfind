@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 function HomeContainer(){
 	return(
 		<section className="h-screen" id="home">
@@ -9,7 +11,7 @@ function HomeContainer(){
 					You bring the idea,<br/>
 					We bring the people.
 				</div>
-				<button className="btn btn-wide font-jetbrains margin mt-10">Get Started!</button>
+				<Link className="btn btn-wide font-jetbrains margin mt-10" to="/login">Get Started!</Link>
 			</div>
 		</section>
 	)
