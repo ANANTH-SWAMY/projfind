@@ -1,195 +1,82 @@
-from flask import Flask, jsonify, request
-from flask_restful import Api, Resource
-from pymongo import MongoClient
-import bcrypt
-import json
+import socket
+
+from helpers import (
+    secrets,
+    message,
+    render_template,
+    getProfilePicture,
+    Flask,
+)
+
+from routes.post import postBlueprint
+from routes.user import userBlueprint
+from routes.index import indexBlueprint
+from routes.login import loginBlueprint
+from routes.signup import signUpBlueprint
+from routes.logout import logoutBlueprint
+from routes.search import searchBlueprint
+from routes.editPost import editPostBlueprint
+from routes.searchBar import searchBarBlueprint
+from routes.dashboard import dashboardBlueprint
+from routes.verifyUser import verifyUserBlueprint
+from routes.adminPanel import adminPanelBlueprint
+from routes.createPost import createPostBlueprint
+from routes.setUserRole import setUserRoleBlueprint
+from routes.passwordReset import passwordResetBlueprint
+from routes.changeUserName import changeUserNameBlueprint
+from routes.changePassword import changePasswordBlueprint
+from routes.adminPanelUsers import adminPanelUsersBlueprint
+from routes.adminPanelPosts import adminPanelPostsBlueprint
+from routes.accountSettings import accountSettingsBlueprint
+from routes.adminPanelComments import adminPanelCommentsBlueprint
+from dbChecker import dbFolder, usersTable, postsTable, commentsTable
+from flask_wtf.csrf import CSRFProtect
+
+dbFolder()
+usersTable()
+postsTable()
+commentsTable()
 
 app = Flask(__name__)
-api = Api(app)
-
-client = MongoClient("mongodb://127.0.0.1:27017")
-db = client.Messages
-users = db["Users"]
+app.secret_key = secrets.token_urlsafe(32)
+app.config["SESSION_PERMANENT"] = True
+csrf = CSRFProtect(app)
 
 
-def verifyUser(username, password):
-    
-    db_pw_check = users.find({
-        "Username": username
-    })[0]["Password"]
-    hashed_pw = bcrypt.hashpw(password.encode('utf8'), db_pw_check)
-    if not db_pw_check:
-        print ("User not found " + username)
-        return False
-    elif hashed_pw == db_pw_check:
-        return True
-    else:
-        print("Password did not match " + str(hashed_pw) + " db = " + str(db_pw_check))
-        return False
-
-def userExists(username):
-    user_check =  users.find_one({
-        "Username" : username
-        })
-    
-    if not user_check:
-        return False
-    else:
-        return True
-
-def countTokens(username):
-    db_count = users.find({
-        "Username": username
-    })[0]["Tokens"]
-
-    if not db_count:
-        return -1
-    else:
-        print ("User " + username + " has " + str(db_count) + " tokens")
-        return int(db_count)
+@app.context_processor
+def utility_processor():
+    getProfilePicture
+    return dict(getProfilePicture=getProfilePicture)
 
 
-class Register(Resource):
-    def post(self):
-        postedData = request.get_json()
-        username = postedData["Username"]
-        password = postedData["Password"]
-        if userExists(username):
-            retJson = {
-            "status": 201,
-            "msg": "user already exists"
-            }
-            return jsonify(retJson)
-
-        # hash the password
-        hashed_pw = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
-
-        #store in db
-        print ("Adding user " + username + " password " + str(hashed_pw))
-        users.insert({
-            "Username": username,
-            "Password": hashed_pw,
-            "Sentence": [],
-            "Tokens": 5
-        })
-        # return code
-        retJson = {
-            "status": 200,
-            "msg": "user has been registered"
-        }
-        return jsonify(retJson)
+@app.errorhandler(404)
+def notFound(e):
+    message("1", "404")
+    return render_template("404.html"), 404
 
 
-class Store(Resource):
-    def post(self):
-        postedData = request.get_json()
-        # get the user pass
-        username = postedData["Username"]
-        password = postedData["Password"]
-        sentence = postedData["Sentence"]
+app.register_blueprint(postBlueprint)
+app.register_blueprint(userBlueprint)
+app.register_blueprint(indexBlueprint)
+app.register_blueprint(loginBlueprint)
+app.register_blueprint(signUpBlueprint)
+app.register_blueprint(logoutBlueprint)
+app.register_blueprint(searchBlueprint)
+app.register_blueprint(editPostBlueprint)
+app.register_blueprint(dashboardBlueprint)
+app.register_blueprint(searchBarBlueprint)
+app.register_blueprint(adminPanelBlueprint)
+app.register_blueprint(createPostBlueprint)
+app.register_blueprint(verifyUserBlueprint)
+app.register_blueprint(setUserRoleBlueprint)
+app.register_blueprint(passwordResetBlueprint)
+app.register_blueprint(changeUserNameBlueprint)
+app.register_blueprint(changePasswordBlueprint)
+app.register_blueprint(adminPanelUsersBlueprint)
+app.register_blueprint(adminPanelPostsBlueprint)
+app.register_blueprint(accountSettingsBlueprint)
+app.register_blueprint(adminPanelCommentsBlueprint)
 
-        # validate user
-        user_validated = verifyUser(username, password)
-        # token check
-        num_tokens = countTokens(username)
-        if not user_validated:
-            retJson = {
-                "status": 302,
-                "msg": "Incorrect userid or password"
-            }
-            return jsonify(retJson)
-        if num_tokens <= 0:
-            retJson = {
-                "status": 301,
-                "msg": "Not enough tokens left. Token count = " + str(num_tokens)
-            }
-            return jsonify(retJson)
-        # update the user in the database
-        
-        print ("Updating user " + username + " token = " + str(num_tokens))
-        users.update(
-            {"Username": username},
-            {"$set":
-             {
-              "Tokens": num_tokens -1
-              },
-              "$push": {
-                "Sentence": sentence
-              }
-             }
-        )
-        retJson = {
-            "status": 200,
-            "msg": "Sentence saved successfully, tokens left =  " + str(num_tokens)
-        }
-        return jsonify(retJson)
-
-class Retreive(Resource):
-    def post(self):
-        postedData = request.get_json()
-        # get the user pass
-        username = postedData["Username"]
-        password = postedData["Password"]
-        # validate user
-        user_validated = verifyUser(username, password)
-        if not user_validated:
-            retJson = {
-                "status": 302,
-                "msg": "Incorrect userid or password"
-            }
-            return jsonify(retJson)
-        sentences = users.find({
-            "Username": username
-            })[0]["Sentence"]
-        retJson = {
-                "status": 200,
-                "msg": str(sentences)
-            }
-        return jsonify(retJson)
-
-class Delete(Resource):
-    def post(self):
-        postedData = request.get_json()
-        # get the user pass
-        username = postedData["Username"]
-        password = postedData["Password"]
-        # validate user
-        user_validated = verifyUser(username, password)
-        if not user_validated:
-            retJson = {
-                "status": 302,
-                "msg": "Incorrect userid or password"
-            }
-            return jsonify(retJson)
-        users.update({
-            "Username": username
-            }, 
-                {"$set": 
-                    {
-                        "Sentence": [],
-                        "Tokens": 5
-                    }
-                }
-            )
-
-        retJson = {
-                "status": 200,
-                "msg": "Deleted all sentences and reset Tokens to default"
-            }
-        return jsonify(retJson)
-
-@app.route('/')
-def hello_world():
-    return "Simple API. /, /register, /store, /get, /delete"
-
-
-api.add_resource(Register, '/register')
-api.add_resource(Store, '/store')
-api.add_resource(Retreive, '/get')
-api.add_resource(Delete, '/delete')
-
-
-if __name__ == "__main__":
-    # app.run(host='0.0.0.0')
-    app.run(host='127.0.0.1', port=5000)
-
+match __name__:
+    case "__main__":
+        app.run(debug=True, host=socket.gethostbyname(socket.gethostname()))
