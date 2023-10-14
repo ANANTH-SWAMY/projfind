@@ -1,12 +1,13 @@
 import { useState } from 'react'
-import Navbar from './components/Navbar'
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import HomePage from "./components/HomePage"
+import LoginPage from './components/LoginPage';
 
 function App() {
 	return (
 		<>
-			<Navbar/>
 			<HomePage/>
+			<LoginPage/>
 		</>
 	)
 }
