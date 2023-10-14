@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Navbar(){
 	return(
 		<div className="navbar bg-base-100 fixed">
@@ -8,7 +10,7 @@ function Navbar(){
 				<ul className="menu menu-horizontal px-1 font-jetbrains text-lg">
 					<li><a href="#home">Home</a></li>
 					<li><a href="#about">About Us</a></li>
-					<li><a className="border-2">Login</a></li>
+					<li><Link to="/login">Login</Link></li>
 				</ul>
 			</div>
 		</div>
