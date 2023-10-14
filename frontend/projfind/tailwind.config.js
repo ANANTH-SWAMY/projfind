@@ -5,7 +5,12 @@ export default {
 		"./src/**/*.{js,ts,jsx,tsx}",
 	],
 	theme: {
-		extend: {},
+		extend: {
+			fontFamily: {
+				'jetbrains': ['JetBrains Mono', 'sans-serif'],
+				'bungee': ['Bungee Spice','sans-serif']
+			},
+		},
 	},
 	plugins: [require("daisyui")],
 
