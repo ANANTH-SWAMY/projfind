@@ -22,7 +22,7 @@ function toLight() {
 function toDark() {
   localStorage.setItem(theme, "dark");
   root.style.setProperty("--themePrimary", "#fff");
-  root.style.setProperty("--themeSecondary", "#000");
+  root.style.setProperty("--themeSecondary", "#272935");
   root.style.setProperty("--themeHelper", "#C6C6C6")
   changeTheme.innerHTML = "🌚";
   changeTheme.setAttribute("onclick", "javascript: toLight();")

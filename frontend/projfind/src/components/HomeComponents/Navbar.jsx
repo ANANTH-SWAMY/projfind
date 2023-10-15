@@ -10,7 +10,7 @@ function Navbar(){
 				<ul className="menu menu-horizontal px-1 font-jetbrains text-lg">
 					<li><a href="#home">Home</a></li>
 					<li><a href="#about">About Us</a></li>
-					<li><Link to="/login" className="border-2 bg-">Login</Link></li>
+					<li><a href="http://172.16.0.2:5000/" className="border-2 bg-">Get Started</a></li>
 				</ul>
 			</div>
 		</div>

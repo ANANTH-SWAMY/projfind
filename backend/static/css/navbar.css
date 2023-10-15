@@ -1,3 +1,7 @@
+@font-face{
+	font-family: 'bungee';
+	src: url("../BungeeSpice-Regular.ttf");
+}
 .navbar {
   align-items: center;
   display: flex;
@@ -15,8 +19,9 @@
 .btnHome {
   margin-left: 12rem;
   order: 1;
-  font-size: 2rem;
+  font-size: 1.7rem;
   font-weight: 550;
+  font-family: bungee;
 }
 
 .fa-solid {

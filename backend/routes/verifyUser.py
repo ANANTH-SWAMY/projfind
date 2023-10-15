@@ -80,8 +80,8 @@ def verifyUser(codeSent):
                                         server.starttls(context=context)
                                         server.ehlo()
                                         server.login(
-                                            "flaskblogdogukanurker@gmail.com",
-                                            "lsooxsmnsfnhnixy",
+                                            "hallothonn@gmail.com",
+                                            "PasS@124",
                                         )
                                         verificationCode = str(randint(1000, 9999))
                                         message = EmailMessage()

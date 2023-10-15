@@ -2,10 +2,9 @@
   max-width: 35rem;
   max-height: fit-content;
   margin-top: 2rem;
+  border: 1px solid var(--themePrimary);
   border-radius: 1rem;
   padding: 1rem;
-  background: #272920;
-  box-shadow: rgba(0,0,0,0.2) 0px 10px 10px;
 }
 
 .content {

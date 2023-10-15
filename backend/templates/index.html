@@ -8,6 +8,7 @@
 <div class="post centeredHorizontally">
   <a class="title textPrimary" href="post/{{post[0]}}">{{post[1]}}</a>
   <div class="content" tag="content">{{post[3]|safe}}</div>
+  <p style="display: flex;align-items: center; gap:0.5rem"><span style="height: 0.7rem;width: 0.7rem; border-radius: 50%; background: green;"></span>Active</p>
   <a href="post/{{post[0]}}" class="btn btnLink">read more</a>
 </div>
 {% endfor %} {% endblock body %}

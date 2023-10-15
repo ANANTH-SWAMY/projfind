@@ -11,7 +11,7 @@ function HomeContainer(){
 					You bring the idea,<br/>
 					We bring the people.
 				</div>
-				<Link className="btn btn-wide font-jetbrains margin mt-10" to="/login">Get Started!</Link>
+				<a className="btn btn-wide font-jetbrains margin mt-10" href="http://172.16.0.2:5000/">Get Started!</a>
 			</div>
 		</section>
 	)
