@@ -81,7 +81,7 @@ def verifyUser(codeSent):
                                         server.ehlo()
                                         server.login(
                                             "hallothonn@gmail.com",
-                                            "PasS@124",
+                                            "slgcxxtrqxhqnlzv",
                                         )
                                         verificationCode = str(randint(1000, 9999))
                                         message = EmailMessage()
